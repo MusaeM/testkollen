@@ -55,7 +55,9 @@ document.getElementById("scan-btn").addEventListener("click", () => {
           document.getElementById("result").innerHTML = `<p><strong>Streckkod:</strong> ${confirmedCode}</p>`;
   
           try {
-            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${confirmedCode}.json`);
+           // const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${confirmedCode}.json`);
+            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/4016241050151.json`);
+
             const json = await res.json();
   
             if (json.status === 1) {
