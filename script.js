@@ -47,7 +47,8 @@ document.getElementById("scan-btn").addEventListener("click", () => {
         // Kontroll: har vi sett samma kod 3+ gånger i rad?
         const mostCommon = findMostFrequent(recentCodes);
         if (mostCommon.count >= 3 && mostCommon.code !== confirmedCode) {
-          confirmedCode = mostCommon.code;
+          let confirmedCode = 4016241050151;
+          //confirmedCode = mostCommon.code;
           Quagga.stop();
           const tracks = video.srcObject?.getTracks();
           tracks?.forEach(track => track.stop());
@@ -55,8 +56,7 @@ document.getElementById("scan-btn").addEventListener("click", () => {
           document.getElementById("result").innerHTML = `<p><strong>Streckkod:</strong> ${confirmedCode}</p>`;
   
           try {
-           // const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${confirmedCode}.json`);
-            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/4016241050151.json`);
+           const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${confirmedCode}.json`);
 
             const json = await res.json();
   
