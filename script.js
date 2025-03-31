@@ -64,7 +64,7 @@
 
         const matches = detectionHistory.filter(c => c === code).length;
 
-        if (matches >= 1) {
+        if (matches >= 2) {
           Quagga.stop();
           const tracks = video.srcObject?.getTracks();
           tracks?.forEach(track => track.stop());
