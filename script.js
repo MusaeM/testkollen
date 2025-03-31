@@ -4,6 +4,8 @@ document.getElementById("scan-btn").addEventListener("click", () => {
   
   function startScanner() {
     const video = document.getElementById("scanner");
+    let recentCodes = [];
+    let confirmedCode = null;
   
     navigator.mediaDevices.getUserMedia({
       video: { facingMode: "environment" },
@@ -11,8 +13,6 @@ document.getElementById("scan-btn").addEventListener("click", () => {
     }).then((stream) => {
       video.srcObject = stream;
       video.play();
-  
-      let lastCode = null;
   
       Quagga.init({
         inputStream: {
@@ -26,7 +26,7 @@ document.getElementById("scan-btn").addEventListener("click", () => {
           readers: ["ean_reader"]
         },
         locate: true,
-        frequency: 2 // scan every 500ms instead of 10ms
+        frequency: 2
       }, function (err) {
         if (err) {
           console.error("Quagga init error:", err);
@@ -39,18 +39,23 @@ document.getElementById("scan-btn").addEventListener("click", () => {
         const code = data.codeResult.code;
         const confidence = parseFloat(data.codeResult.decodedCodes[0]?.error || 1);
   
-        if (code && code !== lastCode && confidence < 0.1) {
-          lastCode = code;
-          console.log("Scanned code:", code);
+        if (confidence > 0.1 || !code) return; // ignorerar osäkra resultat
   
+        recentCodes.push(code);
+        if (recentCodes.length > 5) recentCodes.shift();
+  
+        // Kontroll: har vi sett samma kod 3+ gånger i rad?
+        const mostCommon = findMostFrequent(recentCodes);
+        if (mostCommon.count >= 3 && mostCommon.code !== confirmedCode) {
+          confirmedCode = mostCommon.code;
           Quagga.stop();
           const tracks = video.srcObject?.getTracks();
           tracks?.forEach(track => track.stop());
   
-          document.getElementById("result").innerHTML = `<p><strong>Streckkod:</strong> ${code}</p>`;
+          document.getElementById("result").innerHTML = `<p><strong>Streckkod:</strong> ${confirmedCode}</p>`;
   
           try {
-            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
+            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${confirmedCode}.json`);
             const json = await res.json();
   
             if (json.status === 1) {
@@ -74,5 +79,24 @@ document.getElementById("scan-btn").addEventListener("click", () => {
       console.error("Camera access denied:", err);
       alert("Kunde inte öppna kameran. Tillåt kameratillgång i webbläsaren.");
     });
+  }
+  
+  function findMostFrequent(arr) {
+    const freq = {};
+    arr.forEach(code => {
+      freq[code] = (freq[code] || 0) + 1;
+    });
+  
+    let maxCode = null;
+    let maxCount = 0;
+  
+    for (const code in freq) {
+      if (freq[code] > maxCount) {
+        maxCode = code;
+        maxCount = freq[code];
+      }
+    }
+  
+    return { code: maxCode, count: maxCount };
   }
   
