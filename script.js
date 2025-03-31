@@ -1,17 +1,32 @@
-document.getElementById("scan-btn").addEventListener("click", () => {
+  document.getElementById("scan-btn").addEventListener("click", () => {
     startScanner();
   });
-  
+
   function startScanner() {
     const video = document.getElementById("scanner");
-  
+    const resultDiv = document.getElementById("result");
+    const scanBtn = document.getElementById("scan-btn");
+
+    // Disable scan button
+    scanBtn.disabled = true;
+    resultDiv.innerHTML = "<p>Startar kamera...</p>";
+
+    // Stop any previous camera
+    video.srcObject?.getTracks()?.forEach(track => track.stop());
+
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment" },
+      video: { 
+    facingMode: "environment",
+    width: {ideal: 1280},
+    height: {ideal: 720}
+},
       audio: false
     }).then((stream) => {
       video.srcObject = stream;
       video.play();
-  
+
+      let detectionHistory = [];
+
       Quagga.init({
         inputStream: {
           type: "LiveStream",
@@ -21,52 +36,70 @@ document.getElementById("scan-btn").addEventListener("click", () => {
           }
         },
         decoder: {
-          readers: ["ean_reader"]
+          readers: ["ean_reader", "upc_reader"] // add more if needed
         },
-        locate: true
+        locate: true,
+        frequency: 2
       }, function (err) {
         if (err) {
           console.error("Quagga init error:", err);
+          resultDiv.innerHTML = "<p>Fel vid start av skanner.</p>";
+          scanBtn.disabled = false;
           return;
         }
         Quagga.start();
+        resultDiv.innerHTML = "<p>Skannar streckkod...</p>";
       });
-  
+
       Quagga.onDetected(async function (data) {
         const code = data.codeResult.code;
-        console.log("Scannad kod:", code);
-  
-        // Stoppa scanning och video
-        Quagga.stop();
-        stream.getTracks().forEach(track => track.stop());
-  
-        // Visa EAN-koden direkt
-        document.getElementById("result").innerHTML = `<p><strong>Streckkod:</strong> ${code}</p>`;
-  
-        try {
-          const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
-          const json = await res.json();
-  
-          if (json.status === 1) {
-            const produkt = json.product;
-            document.getElementById("result").innerHTML = `
-              <p><strong>Streckkod:</strong> ${code}</p>
-              <h2>${produkt.product_name}</h2>
-              <p><strong>Ingredienser:</strong> ${produkt.ingredients_text || "okänt"}</p>
-              <p><strong>Allergener:</strong> ${produkt.allergens_tags?.join(", ") || "okänt"}</p>
-            `;
-          } else {
-            document.getElementById("result").innerHTML += "<p>Produkten hittades inte.</p>";
+        if (!code) return;
+
+        // Optional: average error check
+        const errors = data.codeResult.decodedCodes
+          .filter(c => c.error !== undefined)
+          .map(c => c.error);
+        const avgError = errors.reduce((sum, err) => sum + err, 0) / errors.length;
+
+        if (avgError > 0.17) return; // too uncertain
+
+        detectionHistory.push(code);
+        if (detectionHistory.length > 5) detectionHistory.shift(); // keep last 5
+
+        const matches = detectionHistory.filter(c => c === code).length;
+
+        if (matches >= 3) {
+          Quagga.stop();
+          const tracks = video.srcObject?.getTracks();
+          tracks?.forEach(track => track.stop());
+          scanBtn.disabled = false;
+
+          resultDiv.innerHTML = `<p><strong>Streckkod:</strong> ${code}</p>`;
+
+          try {
+            const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
+            const json = await res.json();
+
+            if (json.status === 1) {
+              const produkt = json.product;
+              resultDiv.innerHTML += `
+                <h2>${produkt.product_name || "Okänd produkt"}</h2>
+                <p><strong>Ingredienser:</strong> ${produkt.ingredients_text || "okänt"}</p>
+                <p><strong>Allergener:</strong> ${produkt.allergens_tags?.join(", ") || "okänt"}</p>
+              `;
+            } else {
+              resultDiv.innerHTML += "<p>Produkten hittades inte.</p>";
+            }
+          } catch (e) {
+            console.error("API error:", e);
+            resultDiv.innerHTML += "<p>Kunde inte hämta produktdata.</p>";
           }
-        } catch (e) {
-          console.error("API-fel:", e);
-          document.getElementById("result").innerHTML += "<p>Kunde inte hämta produktdata.</p>";
         }
       });
-  
+
     }).catch((err) => {
-      console.error("Kameratillgång nekad:", err);
-      alert("Kunde inte öppna kameran. Tillåt åtkomst i webbläsaren.");
+      console.error("Camera access denied:", err);
+      alert("Kunde inte öppna kameran. Tillåt kameratillgång i webbläsaren.");
+      scanBtn.disabled = false;
     });
   }
-  
