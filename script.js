@@ -5,7 +5,6 @@ document.getElementById("scan-btn").addEventListener("click", () => {
   function startScanner() {
     const video = document.getElementById("scanner");
   
-    // Använd getUserMedia direkt
     navigator.mediaDevices.getUserMedia({
       video: { facingMode: "environment" },
       audio: false
@@ -13,7 +12,6 @@ document.getElementById("scan-btn").addEventListener("click", () => {
       video.srcObject = stream;
       video.play();
   
-      // Starta Quagga efter att streamen är igång
       Quagga.init({
         inputStream: {
           type: "LiveStream",
@@ -37,12 +35,13 @@ document.getElementById("scan-btn").addEventListener("click", () => {
       Quagga.onDetected(async function (data) {
         const code = data.codeResult.code;
         console.log("Scannad kod:", code);
-        Quagga.stop();
   
-        // Stoppa videoströmmen också
+        // Stoppa scanning och video
+        Quagga.stop();
         stream.getTracks().forEach(track => track.stop());
   
-        document.getElementById("result").innerText = "Söker efter: " + code;
+        // Visa EAN-koden direkt
+        document.getElementById("result").innerHTML = `<p><strong>Streckkod:</strong> ${code}</p>`;
   
         try {
           const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`);
@@ -51,22 +50,23 @@ document.getElementById("scan-btn").addEventListener("click", () => {
           if (json.status === 1) {
             const produkt = json.product;
             document.getElementById("result").innerHTML = `
+              <p><strong>Streckkod:</strong> ${code}</p>
               <h2>${produkt.product_name}</h2>
               <p><strong>Ingredienser:</strong> ${produkt.ingredients_text || "okänt"}</p>
               <p><strong>Allergener:</strong> ${produkt.allergens_tags?.join(", ") || "okänt"}</p>
             `;
           } else {
-            document.getElementById("result").innerText = "Produkten hittades inte.";
+            document.getElementById("result").innerHTML += "<p>Produkten hittades inte.</p>";
           }
         } catch (e) {
           console.error("API-fel:", e);
-          document.getElementById("result").innerText = "Kunde inte hämta produktdata.";
+          document.getElementById("result").innerHTML += "<p>Kunde inte hämta produktdata.</p>";
         }
       });
+  
     }).catch((err) => {
       console.error("Kameratillgång nekad:", err);
       alert("Kunde inte öppna kameran. Tillåt åtkomst i webbläsaren.");
     });
   }
-  
   
