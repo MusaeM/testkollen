@@ -1,2 +1,3 @@
-# matkollen
-POC för matanalys baserat på streckkod
+# testkoll
+
+POC för test baserad på kod

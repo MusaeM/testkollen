@@ -9,7 +9,7 @@ document.getElementById("scan-btn").addEventListener("click", () => {
         target: scanner
       },
       decoder: {
-        readers: ["ean_reader"] // vanlig streckkod i Sverige
+        readers: ["ean_reader"] // 
       }
     }, err => {
       if (err) {
@@ -32,8 +32,8 @@ document.getElementById("scan-btn").addEventListener("click", () => {
         const produkt = json.product;
         document.getElementById("result").innerHTML = `
           <h2>${produkt.product_name}</h2>
-          <p><strong>Ingredienser:</strong> ${produkt.ingredients_text || "okänt"}</p>
-          <p><strong>Allergener:</strong> ${produkt.allergens_tags.join(", ") || "okänt"}</p>
+          <p><strong>Ingr:</strong> ${produkt.ingredients_text || "okänt"}</p>
+          <p><strong>Aller:</strong> ${produkt.allergens_tags.join(", ") || "okänt"}</p>
         `;
       } else {
         document.getElementById("result").innerText = "Produkten hittades inte.";
