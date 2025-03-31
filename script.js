@@ -13,13 +13,17 @@
 
     // Stop any previous camera
     video.srcObject?.getTracks()?.forEach(track => track.stop());
-
+    
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment" },
-      audio: false
-    }).then((stream) => {
-      video.srcObject = stream;
-      video.play();
+        video: { 
+      facingMode: "environment",
+      width: {ideal: 1280},
+      height: {ideal: 720}
+  },
+        audio: false
+      }).then((stream) => {
+        video.srcObject = stream;
+        video.play();
 
       let detectionHistory = [];
 
