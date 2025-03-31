@@ -1,3 +1,13 @@
+:root {
+  --primary: #4caf50;
+  --primary-dark: #388e3c;
+  --background-gradient-start: #d2f0e4;
+  --background-gradient-end: #e7f8f5;
+  --text-dark: #333;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,8 +16,12 @@
 
 body {
   font-family: "Segoe UI", sans-serif;
-  background-color: #f2f4f8;
-  color: #333;
+  background: linear-gradient(
+    145deg,
+    var(--background-gradient-start),
+    var(--background-gradient-end)
+  );
+  color: var(--text-dark);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,8 +39,8 @@ p {
 }
 
 button {
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--primary);
+  color: var(--white);
   padding: 12px 24px;
   font-size: 1rem;
   border: none;
@@ -37,7 +51,7 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: var(--primary-dark);
 }
 
 #scanner-container {
@@ -47,7 +61,7 @@ button:hover {
   aspect-ratio: 3 / 4;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 15px var(--shadow);
   background: black;
   margin-bottom: 20px;
 }
@@ -56,12 +70,13 @@ button:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 #result {
-  background: white;
+  background: var(--white);
   border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--shadow);
   padding: 20px;
   width: 100%;
   max-width: 400px;
