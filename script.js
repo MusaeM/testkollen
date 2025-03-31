@@ -57,7 +57,7 @@
           .map(c => c.error);
         const avgError = errors.reduce((sum, err) => sum + err, 0) / errors.length;
 
-        if (avgError > 0.2) return; // too uncertain
+        if (avgError > 0.17) return; // too uncertain
 
         detectionHistory.push(code);
         if (detectionHistory.length > 5) detectionHistory.shift(); // keep last 5
