@@ -1,6 +1,6 @@
 document.getElementById("scan-btn").addEventListener("click", () => {
     const scanner = document.getElementById("scanner");
-    scanner.style.display = "block";
+   // scanner.style.display = "block";
   
     Quagga.init({
       inputStream: {

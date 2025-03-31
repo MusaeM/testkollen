@@ -11,3 +11,19 @@ body {
   padding: 15px;
   border-radius: 8px;
 }
+
+#scanner-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#scanner {
+  width: 100%;
+  height: auto;
+  display: block;
+}
