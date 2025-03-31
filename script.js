@@ -57,14 +57,14 @@
           .map(c => c.error);
         const avgError = errors.reduce((sum, err) => sum + err, 0) / errors.length;
 
-        if (avgError > 0.25) return; // too uncertain
+        if (avgError > 0.2) return; // too uncertain
 
         detectionHistory.push(code);
         if (detectionHistory.length > 5) detectionHistory.shift(); // keep last 5
 
         const matches = detectionHistory.filter(c => c === code).length;
 
-        if (matches >= 2) {
+        if (matches >= 3) {
           Quagga.stop();
           const tracks = video.srcObject?.getTracks();
           tracks?.forEach(track => track.stop());
