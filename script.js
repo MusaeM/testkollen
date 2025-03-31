@@ -1,4 +1,4 @@
-    document.getElementById("scan-btn").addEventListener("click", () => {
+ document.getElementById("scan-btn").addEventListener("click", () => {
     startScanner();
   });
 
@@ -15,11 +15,7 @@
     video.srcObject?.getTracks()?.forEach(track => track.stop());
 
     navigator.mediaDevices.getUserMedia({
-      video: { 
-    facingMode: "environment",
-    width: {ideal: 1280},
-    height: {ideal: 720}
-},
+      video: { facingMode: "environment" },
       audio: false
     }).then((stream) => {
       video.srcObject = stream;
@@ -42,8 +38,8 @@
         frequency: 2
       }, function (err) {
         if (err) {
-            console.error("Quagga init error:", err.message || err);
-            resultDiv.innerHTML = "<p>Fel vid start av skanner.</p>";
+          console.error("Quagga init error:", err);
+          resultDiv.innerHTML = "<p>Fel vid start av skanner.</p>";
           scanBtn.disabled = false;
           return;
         }

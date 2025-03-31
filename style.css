@@ -1,103 +1,31 @@
-:root {
-  --primary: #43a047;
-  --primary-dark: #2e7d32;
-  --background-gradient-start: #b2dfdb;
-  --background-gradient-end: #e0f2f1;
-  --text-dark: #212121;
-  --white: #ffffff;
-  --shadow: rgba(0, 0, 0, 0.15);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(
-    135deg,
-    var(--background-gradient-start),
-    var(--background-gradient-end)
-  );
-  color: var(--text-dark);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 20px;
-  min-height: 100vh;
-  background-attachment: fixed;
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  font-weight: 600;
-  text-shadow: 0 1px 0 #fff;
-}
-
-p {
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-button {
-  background-color: var(--primary);
-  color: var(--white);
-  padding: 14px 26px;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 12px var(--shadow);
-}
-
-button:hover {
-  background-color: var(--primary-dark);
-  transform: scale(1.02);
+  font-family: sans-serif;
+  padding: 20px;
+  max-width: 500px;
+  margin: auto;
+  text-align: center;
 }
 
 #scanner-container {
   position: relative;
   width: 100%;
   max-width: 400px;
-  aspect-ratio: 3 / 4;
-  border-radius: 18px;
+  margin: 20px auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 18px var(--shadow);
   background: black;
-  margin-bottom: 25px;
 }
 
 #scanner {
   width: 100%;
-  height: 100%;
+  display: block;
 }
 
 #result {
-  background: var(--white);
-  border-radius: 16px;
-  box-shadow: 0 6px 20px var(--shadow);
-  padding: 24px;
-  width: 100%;
-  max-width: 400px;
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   text-align: left;
-  word-wrap: break-word;
-  transition: all 0.3s ease;
-}
-
-#result h2 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-#result p {
-  margin-bottom: 0.5rem;
 }
