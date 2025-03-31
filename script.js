@@ -42,8 +42,8 @@
         frequency: 2
       }, function (err) {
         if (err) {
-          console.error("Quagga init error:", err);
-          resultDiv.innerHTML = "<p>Fel vid start av skanner.</p>";
+            console.error("Quagga init error:", err.message || err);
+            resultDiv.innerHTML = "<p>Fel vid start av skanner.</p>";
           scanBtn.disabled = false;
           return;
         }
