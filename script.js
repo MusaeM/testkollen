@@ -2,22 +2,32 @@ document.getElementById("scan-btn").addEventListener("click", () => {
     const scanner = document.getElementById("scanner");
    // scanner.style.display = "block";
   
-    Quagga.init({
-      inputStream: {
-        name: "Live",
-        type: "LiveStream",
-        target: scanner
-      },
-      decoder: {
-        readers: ["ean_reader"] // 
+   Quagga.init({
+    inputStream: {
+      name: "Live",
+      type: "LiveStream",
+      target: document.querySelector("#scanner"),
+      constraints: {
+        facingMode: "environment", // För mobilkamera bak
+        aspectRatio: { min: 1, max: 2 }
       }
-    }, err => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      Quagga.start();
-    });
+    },
+    locator: {
+      patchSize: "medium",
+      halfSample: true
+    },
+    decoder: {
+      readers: ["ean_reader"]
+    },
+    locate: true
+  }, function (err) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    Quagga.start();
+  });
+  
   
     Quagga.onDetected(async data => {
       const code = data.codeResult.code;
