@@ -47,8 +47,7 @@ document.getElementById("scan-btn").addEventListener("click", () => {
         // Kontroll: har vi sett samma kod 3+ gånger i rad?
         const mostCommon = findMostFrequent(recentCodes);
         if (mostCommon.count >= 3 && mostCommon.code !== confirmedCode) {
-          let confirmedCode = 4016241050151;
-          //confirmedCode = mostCommon.code;
+          confirmedCode = mostCommon.code;
           Quagga.stop();
           const tracks = video.srcObject?.getTracks();
           tracks?.forEach(track => track.stop());
