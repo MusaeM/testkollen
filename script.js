@@ -22,8 +22,8 @@
         },
       audio: false
     }).then((stream) => {
-      video.srcObject = stream;
-      video.play();
+     // video.srcObject = stream;
+     // video.play();
 
       let detectionHistory = [];
 
