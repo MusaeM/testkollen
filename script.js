@@ -1,4 +1,4 @@
-document.getElementById("scan-btn").addEventListener("click", () => {
+ document.getElementById("scan-btn").addEventListener("click", () => {
     startScanner();
   });
 
@@ -13,9 +13,12 @@ document.getElementById("scan-btn").addEventListener("click", () => {
 
     // Stop any previous camera
     video.srcObject?.getTracks()?.forEach(track => track.stop());
-
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment" },
+      video: { 
+    facingMode: "environment",
+    width: {ideal: 1280},
+    height: {ideal: 720}
+},
       audio: false
     }).then((stream) => {
       video.srcObject = stream;
