@@ -16,9 +16,9 @@
 
     navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: "environment",
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
+        facingMode: { exact: "environment" },
+        width: { min: 640, ideal: 1280, max: 1920 },
+        height: { min: 480, ideal: 720, max: 1080 }
         },
       audio: false
     }).then((stream) => {
@@ -98,8 +98,8 @@
       });
 
     }).catch((err) => {
-      console.error("Camera access denied:", err);
-      alert("Kunde inte öppna kameran. Tillåt kameratillgång i webbläsaren.");
+      console.error("Kamerafel:", err.name, err.message);
+      alert("Kunde inte öppna kameran:\n" + err.message);
       scanBtn.disabled = false;
     });
   }
